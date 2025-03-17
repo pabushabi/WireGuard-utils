@@ -56,17 +56,7 @@ async def addclient(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                     else:
                         await update.message.reply_text(f"Файл {file_path} не найден.")
 
-                result = subprocess.run(
-                    ["systemctl", "restart", SERVICE_NAME, "--no-pager"],
-                    capture_output=True,
-                    text=True
-                )
-
-                if (result.returncode != 0):
-                    await update.message.reply_text(f"Ошибка при перезапуске сервиса: {result.stderr}")
-                    return
-                else:
-                    await update.message.reply_text("Сервис успешно перезапущен.")
+                _restart(update)
 
             except Exception as e:
                 await update.message.reply_text(f"Ошибка при выполнении скрипта: {e}")
@@ -136,6 +126,27 @@ async def status(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             await update.message.reply_text(f"Ошибка при выполнении команды: {e}")
 
 
+async def restart(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if update.message.from_user.id in WHITELIST_USER_IDS:
+        await _restart(update)
+
+
+async def _restart(update: Update) -> None:
+    try:
+        result = subprocess.run(
+            ["systemctl", "restart", SERVICE_NAME, "--no-pager"],
+            capture_output=True,
+            text=True
+        )
+
+        if result.returncode != 0:
+            await update.message.reply_text(f"Ошибка при перезапуске сервиса: {result.stderr}")
+            return
+        else:
+            await update.message.reply_text("Сервис успешно перезапущен.")
+    except Exception as e:
+        await update.message.reply_text(f"Ошибка при перезапуске сервиса: {e}")
+
 
 def extract_file_names(args):
     file_names = []
@@ -163,6 +174,7 @@ def main() -> None:
     application.add_handler(CommandHandler("list", list))
     application.add_handler(CommandHandler("save", save))
     application.add_handler(CommandHandler("status", status))
+    application.add_handler(CommandHandler("restart", restart))
 
     # text message handler
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))

@@ -57,7 +57,7 @@ optional arguments:
 ##### Telegram bot
 usage: bot.py
 
-Little telegram bot for wg management. Supports client addition, getting list of existing configs, downloading configs, checking systemctl status. Works only for whitelisted users.
+Little telegram bot for wg management. Supports client addition, getting list of existing configs, downloading configs, checking and restarting systemctl status. Works only for whitelisted users.
 
 Configuring .env is required:
 ```
