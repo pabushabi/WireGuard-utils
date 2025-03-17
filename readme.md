@@ -29,6 +29,7 @@ python3 addclient.py username1 username2... --ip <your-server-ip-here>
 ```
 Then you need to import WireGuard tunnel config file from `clients/wg-<username>.conf` to your WireGuard client app on your phone (laptop, PC, whatever...)
 ### Usage 
+##### Install script
 ```
 usage: install.py [-h] [-p PORT]
 
@@ -38,6 +39,7 @@ optional arguments:
   -h, --help            show this help message and exit
   -p PORT, --port PORT  custom server port (default - 51820)
 ```
+##### Client addition script
 ```
 usage: addclient.py [-h] -i IP [-p PORT] [-d DNS] NAME [NAME ...]
 
@@ -52,3 +54,18 @@ optional arguments:
   -p PORT, --port PORT  custom server port (default - 51820)
   -d DNS, --dns DNS     custom dns server (default - 1.1.1.1)
 ```
+##### Telegram bot
+usage: bot.py
+
+Little telegram bot for wg management. Supports client addition, getting list of existing configs, downloading configs, checking systemctl status. Works only for whitelisted users.
+
+Configuring .env is required:
+```
+TELEGRAM_BOT_TOKEN=<YOUR-TELEGRAM-BOT-TOKEN>
+WHITELIST_USER_IDS=<USER-ID>,<USER-ID>,...
+CLIENTS_DIR=/wireguard/clients
+SERVICE_NAME=wg-quick@wg.service
+SCRIPT_PATH=/wireguard/addclient.py
+```
+
+Run bot any method you prefer (nohup, tmux, systemd)
